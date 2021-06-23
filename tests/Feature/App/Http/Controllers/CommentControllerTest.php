@@ -135,7 +135,7 @@ class CommentControllerTest extends TestCase
             "body" => "lorem vscode",
         ];
         $response = $this->json("POST", "/api/posts/4/comment", $payload);
-        $response->assertStatus(401);
+        $response->assertUnauthorized();
     }
     public function test_comments_listing_without_authorisation()
     {
