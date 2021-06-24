@@ -24,7 +24,7 @@ class CommentRequest extends FormRequest
     public function rules()
     {
         return [
-            "body" => "required|min:8",
+            "body" => "required|min:8|unique:comments",
         ];
     }
     public function messages()

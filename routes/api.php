@@ -21,8 +21,11 @@ use App\Http\Controllers\CommentController;
 Route::post("register", [RegisterController::class, "register"]);
 Route::post("login", [LoginController::class, "login"]);
 Route::get("/posts/{post}/comments", [CommentController::class, "index"]);
+Route::get("/posts", [PostController::class, "index"]);
 Route::middleware("auth:api")->group(function () {
-    Route::resource("posts", PostController::class);
+    Route::resource("posts", PostController::class, [
+        "except" => ["index"],
+    ]);
     Route::post("/posts/{post}/comment", [CommentController::class, "store"]);
     Route::put("/posts/{post}/comment/{comment}", [
         CommentController::class,

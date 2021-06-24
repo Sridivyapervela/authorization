@@ -7,21 +7,10 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Session;
 
 class LoginControllerTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function test_example()
-    {
-        $response = $this->get("/");
-
-        $response->assertStatus(200);
-    }
-    /** @test */
     public function test_login_true()
     {
         $credential = [
@@ -30,20 +19,14 @@ class LoginControllerTest extends TestCase
         ];
         $response = $this->post("/api/login", $credential);
         $response->assertSessionMissing("errors");
-        // $response->assertSessionHas([
-        //     "email" => "deepthi@gmail.com",
-        // ]);
         $response->assertStatus(200);
     }
-
-    // public function testRequiresEmailAndLogin()
-    // {
-    //     $credential = [];
-    //     $response = $this->post("/api/login", $credential);
-    //     $response->assertStatus(500);
-    // }
-
-    /** @test */
+    public function testRequiresEmailAndLogin()
+    {
+        $credential = [];
+        $response = $this->post("/api/login", $credential);
+        $response->assertJsonMissingValidationErrors("email", "password");
+    }
     public function test_password_validation()
     {
         $credential = [
@@ -53,7 +36,6 @@ class LoginControllerTest extends TestCase
         $response = $this->post("/api/login", $credential);
         $response->assertJsonValidationErrors("password");
     }
-    /** @test */
     public function test_login_false()
     {
         $credential = [
@@ -63,8 +45,7 @@ class LoginControllerTest extends TestCase
         $response = $this->post("/api/login", $credential);
         $response->assertStatus(401);
     }
-    /** @test */
-    function logged_in_after_login()
+    public function test_logged_in_after_login()
     {
         $this->assertGuest();
         $user = ["email" => "deepthi@gmail.com", "password" => "password"];
@@ -73,7 +54,7 @@ class LoginControllerTest extends TestCase
             "password" => "password",
         ]);
         $this->assertAuthenticated();
-        // $this->assertTrue(Auth::check());
-        // $this->assertCount(0, User::all());
+        $this->assertTrue(Auth::check());
+        $this->assertCount(9, User::all());
     }
 }
